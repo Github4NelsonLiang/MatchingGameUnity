@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -34,7 +35,7 @@ public class Grid : MonoBehaviour {
 	public int yDim;
 	public float fillTime;
 
-	public Level level;
+	public simpleLevel level;
 
 	public PiecePrefab[] piecePrefabs;
 	public GameObject backgroundPrefab;
@@ -79,7 +80,7 @@ public class Grid : MonoBehaviour {
 
 		for (int i = 0; i < initialPieces.Length; i++) {
 			if (initialPieces [i].x >= 0 && initialPieces [i].x < xDim
-			    && initialPieces [i].y >= 0 && initialPieces [i].y < yDim) {
+				&& initialPieces [i].y >= 0 && initialPieces [i].y < yDim) {
 				SpawnNewPiece (initialPieces [i].x, initialPieces [i].y, initialPieces [i].type);
 			}
 		}
@@ -94,10 +95,10 @@ public class Grid : MonoBehaviour {
 
 		StartCoroutine(Fill ());
 	}
-	
+
 	// Update is called once per frame
 	void Update () {
-	
+
 	}
 
 	public IEnumerator Fill()
@@ -239,7 +240,7 @@ public class Grid : MonoBehaviour {
 	public bool IsAdjacent(GamePiece piece1, GamePiece piece2)
 	{
 		return (piece1.X == piece2.X && (int)Mathf.Abs (piece1.Y - piece2.Y) == 1)
-		|| (piece1.Y == piece2.Y && (int)Mathf.Abs (piece1.X - piece2.X) == 1);
+			|| (piece1.Y == piece2.Y && (int)Mathf.Abs (piece1.X - piece2.X) == 1);
 	}
 
 	public void SwapPieces(GamePiece piece1, GamePiece piece2)
@@ -523,7 +524,7 @@ public class Grid : MonoBehaviour {
 							GamePiece newPiece = SpawnNewPiece (specialPieceX, specialPieceY, specialPieceType);
 
 							if ((specialPieceType == PieceType.ROW_CLEAR || specialPieceType == PieceType.COLUMN_CLEAR)
-							    && newPiece.IsColored () && match [0].IsColored ()) {
+								&& newPiece.IsColored () && match [0].IsColored ()) {
 								newPiece.ColorComponent.SetColor (match [0].ColorComponent.Color);
 							} else if (specialPieceType == PieceType.RAINBOW && newPiece.IsColored ()) {
 								newPiece.ColorComponent.SetColor (ColorPiece.ColorType.ANY);
@@ -591,7 +592,7 @@ public class Grid : MonoBehaviour {
 		for (int x = 0; x < xDim; x++) {
 			for (int y = 0; y < yDim; y++) {
 				if (pieces [x, y].IsColored () && (pieces [x, y].ColorComponent.Color == color
-				    || color == ColorPiece.ColorType.ANY)) {
+					|| color == ColorPiece.ColorType.ANY)) {
 					ClearPiece (x, y);
 				}
 			}

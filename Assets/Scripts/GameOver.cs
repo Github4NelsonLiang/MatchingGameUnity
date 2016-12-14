@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class GameOver : MonoBehaviour {
 
@@ -7,20 +8,15 @@ public class GameOver : MonoBehaviour {
 	public GameObject scoreParent;
 	public UnityEngine.UI.Text loseText;
 	public UnityEngine.UI.Text scoreText;
-	public UnityEngine.UI.Image[] stars;
 
 	// Use this for initialization
 	void Start () {
 		screenParent.SetActive (false);
-
-		for (int i = 0; i < stars.Length; i++) {
-			stars [i].enabled = false;
-		}
 	}
-	
+
 	// Update is called once per frame
 	void Update () {
-	
+
 	}
 
 	public void Lose()
@@ -56,28 +52,17 @@ public class GameOver : MonoBehaviour {
 	{
 		yield return new WaitForSeconds (0.5f);
 
-		if (starCount < stars.Length) {
-			for (int i = 0; i <= starCount; i++) {
-				stars [i].enabled = true;
-
-				if (i > 0) {
-					stars [i - 1].enabled = false;
-				}
-
-				yield return new WaitForSeconds (0.5f);
-			}
-		}
 
 		scoreText.enabled = true;
 	}
 
 	public void replayClicked()
 	{
-		UnityEngine.SceneManagement.SceneManager.LoadScene (UnityEngine.SceneManagement.SceneManager.GetActiveScene ().name);
+		SceneManager.LoadScene (UnityEngine.SceneManagement.SceneManager.GetActiveScene ().name);
 	}
 
 	public void doneClicked()
 	{
-		UnityEngine.SceneManagement.SceneManager.LoadScene ("levelSelect");
+		SceneManager.LoadScene ("levelSelect");
 	}
 }

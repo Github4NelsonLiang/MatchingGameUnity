@@ -1,29 +1,20 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class HUD : MonoBehaviour {
 
-	public Level level;
-	public GameOver gameOver;
-
-	public UnityEngine.UI.Text remainingText;
-	public UnityEngine.UI.Text remainingSubtext;
-	public UnityEngine.UI.Text targetText;
-	public UnityEngine.UI.Text targetSubtext;
-	public UnityEngine.UI.Text scoreText;
-	public UnityEngine.UI.Image[] stars;
-
-	private int starIdx = 0;
+	public simpleLevel level;
+	public Text remainingText;
+	public Text remainingSubtext;
+	public Text targetText;
+	public Text targetSubtext;
+	public Text scoreText;
 
 	// Use this for initialization
 	void Start () {
-		for (int i = 0; i < stars.Length; i++) {
-			if (i == starIdx) {
-				stars [i].enabled = true;
-			} else {
-				stars [i].enabled = false;
-			}
-		}
+
+
 	}
 	
 	// Update is called once per frame
@@ -35,15 +26,6 @@ public class HUD : MonoBehaviour {
 	{
 		scoreText.text = score.ToString ();
 
-		int visibleStar = 0;
-
-		if (score >= level.score1Star && score < level.score2Star) {
-			visibleStar = 1;
-		} else if (score >= level.score2Star && score < level.score3Star) {
-			visibleStar = 2;
-		} else if (score >= level.score3Star) {
-			visibleStar = 3;
-		}
 			
 	}
 
@@ -62,30 +44,10 @@ public class HUD : MonoBehaviour {
 		remainingText.text = remaining;
 	}
 
-	public void SetLevelType(Level.LevelType type)
+	public void SetLevelType()
 	{
-		if (type == Level.LevelType.MOVES) {
-			remainingSubtext.text = "moves remaining";
-			targetSubtext.text = "target score";
-		} else if (type == Level.LevelType.OBSTACLE) {
-			remainingSubtext.text = "moves remaining";
-			targetSubtext.text = "bubbles remaining";
-		} else if (type == Level.LevelType.TIMER) {
 			remainingSubtext.text = "time remaining";
 			targetSubtext.text = "target score";
-		}
 	}
-
-	public void OnGameWin(int score)
-	{
-		gameOver.Win (score, starIdx);
-		if (starIdx > PlayerPrefs.GetInt (UnityEngine.SceneManagement.SceneManager.GetActiveScene ().name, 0)) {
-			PlayerPrefs.SetInt (UnityEngine.SceneManagement.SceneManager.GetActiveScene ().name, starIdx);
-		}
-	}
-
-	public void OnGameLose()
-	{
-		gameOver.Lose ();
-	}
+		
 }
