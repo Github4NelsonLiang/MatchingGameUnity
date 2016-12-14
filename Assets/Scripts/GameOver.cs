@@ -23,7 +23,7 @@ public class GameOver : MonoBehaviour {
 	
 	}
 
-	public void ShowLose()
+	public void Lose()
 	{
 		screenParent.SetActive (true);
 		scoreParent.SetActive (false);
@@ -35,7 +35,7 @@ public class GameOver : MonoBehaviour {
 		}
 	}
 
-	public void ShowWin(int score, int starCount)
+	public void Win(int score, int starCount)
 	{
 		screenParent.SetActive (true);
 		loseText.enabled = false;
@@ -71,12 +71,12 @@ public class GameOver : MonoBehaviour {
 		scoreText.enabled = true;
 	}
 
-	public void OnReplayClicked()
+	public void replayClicked()
 	{
 		UnityEngine.SceneManagement.SceneManager.LoadScene (UnityEngine.SceneManagement.SceneManager.GetActiveScene ().name);
 	}
 
-	public void OnDoneClicked()
+	public void doneClicked()
 	{
 		UnityEngine.SceneManagement.SceneManager.LoadScene ("levelSelect");
 	}
