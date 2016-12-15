@@ -38,6 +38,8 @@ public class simpleLevel : MonoBehaviour {
 			timer += Time.deltaTime;
 			scoreDisplay.SetRemaining (string.Format ("{0}:{1:00}", (int)Mathf.Max((timeInSeconds - timer) / 60, 0), (int)Mathf.Max((timeInSeconds - timer) % 60, 0)));
 
+
+			//GAME WIN LOGIC
 			if (timeInSeconds - timer <= 0) {
 				if (currentScore >= targetScore) {
 					GameWin ();
