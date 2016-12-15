@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 
-public class HUD : MonoBehaviour {
+public class UIDisplay : MonoBehaviour {
 
 	public simpleLevel level;
 	public Text remainingText;
