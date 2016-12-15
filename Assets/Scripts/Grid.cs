@@ -27,6 +27,7 @@ public class Grid : MonoBehaviour {
 		public PieceType type;
 		public int x;
 		public int y;
+
 	};
 
 	public int xDim;
@@ -38,7 +39,7 @@ public class Grid : MonoBehaviour {
 	public PiecePrefab[] piecePrefabs;
 	public GameObject backgroundPrefab;
 
-	private Dictionary<PieceType, GameObject> piecePrefabDict;
+	private Dictionary<PieceType, GameObject> piecePrefabMap;
 
 	private GamePiece[,] pieces;
 
@@ -57,11 +58,11 @@ public class Grid : MonoBehaviour {
 	}
 
 	void Awake () {
-		piecePrefabDict = new Dictionary<PieceType, GameObject> ();
+		piecePrefabMap = new Dictionary<PieceType, GameObject> ();
 
 		for (int i = 0; i < piecePrefabs.Length; i++) {
-			if (!piecePrefabDict.ContainsKey (piecePrefabs [i].type)) {
-				piecePrefabDict.Add (piecePrefabs [i].type, piecePrefabs [i].prefab);
+			if (!piecePrefabMap.ContainsKey (piecePrefabs [i].type)) {
+				piecePrefabMap.Add (piecePrefabs [i].type, piecePrefabs [i].prefab);
 			}
 		}
 
@@ -74,8 +75,10 @@ public class Grid : MonoBehaviour {
 
 		pieces = new GamePiece[xDim, yDim];
 
-		for (int x = 0; x < xDim; x++) {
-			for (int y = 0; y < yDim; y++) {
+		for (int x = 0; x < xDim; x++)
+		{
+			for (int y = 0; y < yDim; y++)
+			{
 				if (pieces [x, y] == null) {
 					CreateNewP (x, y, PieceType.EMPTY);
 				}
@@ -98,7 +101,8 @@ public class Grid : MonoBehaviour {
 		while (refillNeeded) {
 			yield return new WaitForSeconds (fillTime);
 
-			while (FillStep ()) {
+			while (FillStep ())
+			{
 				inverse = !inverse;
 				yield return new WaitForSeconds (fillTime);
 			}
@@ -111,7 +115,7 @@ public class Grid : MonoBehaviour {
 
 	public bool FillStep()
 	{
-		bool pieceFlag = false;
+		bool addPieceFlag = false;
 
 		for (int y = yDim-2; y >= 0; y--)
 		{
@@ -130,11 +134,16 @@ public class Grid : MonoBehaviour {
 					GamePiece pieceBelow = pieces [x, y + 1];
 
 					if (pieceBelow.Type == PieceType.EMPTY) {
+
 						Destroy (pieceBelow.gameObject);
+
 						piece.MovableComponent.Move (x, y + 1, fillTime);
 						pieces [x, y + 1] = piece;
+
 						CreateNewP (x, y, PieceType.EMPTY);
-						pieceFlag = true;
+						addPieceFlag = true;
+
+
 					}
 				}
 			}
@@ -147,18 +156,19 @@ public class Grid : MonoBehaviour {
 			if (pieceBelow.Type == PieceType.EMPTY)
 			{
 				Destroy (pieceBelow.gameObject);
-				GameObject newPiece = (GameObject)Instantiate(piecePrefabDict[PieceType.NORMAL], GetWorldPosition(x, -1), Quaternion.identity);
+				GameObject newPiece = (GameObject)Instantiate(piecePrefabMap[PieceType.NORMAL], GetWorldPosition(x, -1), Quaternion.identity);
 				newPiece.transform.parent = transform;
 
 				pieces [x, 0] = newPiece.GetComponent<GamePiece> ();
 				pieces [x, 0].Init (x, -1, this, PieceType.NORMAL);
 				pieces [x, 0].MovableComponent.Move (x, 0, fillTime);
+
 				pieces [x, 0].ColorComponent.SetColor ((ColorPiece.ColorType)Random.Range (0, pieces [x, 0].ColorComponent.NumColors));
-				pieceFlag = true;
+				addPieceFlag = true;
 			}
 		}
 
-		return pieceFlag;
+		return addPieceFlag;
 	}
 
 	public Vector2 GetWorldPosition(int x, int y)
@@ -169,7 +179,7 @@ public class Grid : MonoBehaviour {
 
 	public GamePiece CreateNewP(int x, int y, PieceType type)
 	{
-		GameObject newPiece = (GameObject)Instantiate (piecePrefabDict [type], GetWorldPosition (x, y), Quaternion.identity);
+		GameObject newPiece = (GameObject)Instantiate (piecePrefabMap [type], GetWorldPosition (x, y), Quaternion.identity);
 		newPiece.transform.parent = transform;
 
 		pieces [x, y] = newPiece.GetComponent<GamePiece> ();
@@ -194,7 +204,8 @@ public class Grid : MonoBehaviour {
 			pieces [firstP.X, firstP.Y] = secondP;
 			pieces [secondP.X, secondP.Y] = firstP;
 
-			if (findMatches (firstP, secondP.X, secondP.Y) != null || findMatches (secondP, firstP.X, firstP.Y) != null) {
+			if (findMatches (firstP, secondP.X, secondP.Y) != null || findMatches (secondP, firstP.X, firstP.Y) != null)
+			{
 
 				int piece1X = firstP.X;
 				int piece1Y = firstP.Y;
@@ -247,6 +258,7 @@ public class Grid : MonoBehaviour {
 	{
 		if (piece.IsColored ()) {
 			ColorPiece.ColorType color = piece.ColorComponent.Color;
+
 			List<GamePiece> horizontalPieces = new List<GamePiece> ();
 			List<GamePiece> verticalPieces = new List<GamePiece> ();
 			List<GamePiece> matchingPieces = new List<GamePiece> ();
@@ -254,8 +266,10 @@ public class Grid : MonoBehaviour {
 			// First check horizontal
 			horizontalPieces.Add(piece);
 
-			for (int searchDirection = 0; searchDirection <= 1; searchDirection++) {
-				for (int xOffset = 1; xOffset < xDim; xOffset++) {
+			for (int searchDirection = 0; searchDirection <= 1; searchDirection++)
+			 {
+				for (int xOffset = 1; xOffset < xDim; xOffset++)
+				{
 					int x;
 
 					if (searchDirection == 0) { // Left
@@ -268,7 +282,8 @@ public class Grid : MonoBehaviour {
 						break;
 					}
 
-					if (pieces [x, newY].IsColored () && pieces [x, newY].ColorComponent.Color == color) {
+					if (pieces [x, newY].IsColored () && pieces [x, newY].ColorComponent.Color == color)
+					{
 						horizontalPieces.Add (pieces [x, newY]);
 					} else {
 						break;
@@ -293,7 +308,8 @@ public class Grid : MonoBehaviour {
 			verticalPieces.Clear ();
 			verticalPieces.Add(piece);
 
-			for (int searchDirection = 0; searchDirection <= 1; searchDirection++) {
+			for (int searchDirection = 0; searchDirection <= 1; searchDirection++)
+			{
 				for (int yOffset = 1; yOffset < yDim; yOffset++) {
 					int y;
 
@@ -307,7 +323,8 @@ public class Grid : MonoBehaviour {
 						break;
 					}
 
-					if (pieces [newX, y].IsColored () && pieces [newX, y].ColorComponent.Color == color) {
+					if (pieces [newX, y].IsColored () && pieces [newX, y].ColorComponent.Color == color)
+					{
 						verticalPieces.Add (pieces [newX, y]);
 					} else {
 						break;
@@ -336,42 +353,48 @@ public class Grid : MonoBehaviour {
 		for (int y = 0; y < yDim; y++) {
 			for (int x = 0; x < xDim; x++) {
 				if (pieces [x, y].IsClearable ()) {
-					List<GamePiece> match = findMatches (pieces [x, y], x, y);
+					List<GamePiece> matchList = findMatches (pieces [x, y], x, y);
 
-					if (match != null) {
+					if (matchList != null) {
 						PieceType newPieceType = PieceType.NORMAL;
-						GamePiece randomPiece = match [Random.Range (0, match.Count)];
-						int specialPieceX = randomPiece.X;
-						int specialPieceY = randomPiece.Y;
+						GamePiece randomPiece = matchList [Random.Range (0, matchList.Count)];
+						int newPieceX = randomPiece.X;
+						int newPieceY = randomPiece.Y;
 
-						if (match.Count >= 3) {
+						if (matchList.Count >= 3) {
 							if (pressedPiece == null || enteredPiece == null) {
 								newPieceType = (PieceType)Random.Range ((int)PieceType.ROW_CLEAR, (int)PieceType.COLUMN_CLEAR);
-							} else if (pressedPiece.Y == enteredPiece.Y) {
+
+							}
+							else if (pressedPiece.Y == enteredPiece.Y)
+							{
 								newPieceType = PieceType.ROW_CLEAR;
-							} else {
+							}
+							 else
+							 {
 								newPieceType = PieceType.COLUMN_CLEAR;
 							}
 						}
 
-						for (int i = 0; i < match.Count; i++) {
-							if (ClearPiece (match [i].X, match [i].Y)) {
+						for (int i = 0; i < matchList.Count; i++) {
+							if (ClearPiece (matchList [i].X, matchList [i].Y)) {
 								refillNeeded = true;
 
-								if (match [i] == pressedPiece || match [i] == enteredPiece) {
-									specialPieceX = match [i].X;
-									specialPieceY = match [i].Y;
+								if (matchList [i] == pressedPiece || matchList [i] == enteredPiece)
+								{
+									newPieceX = matchList [i].X;
+									newPieceY = matchList [i].Y;
 								}
 							}
 						}
 
-						if (newPieceType != PieceType.NORMAL) {
-							Destroy (pieces [specialPieceX, specialPieceY]);
-							GamePiece newPiece = CreateNewP (specialPieceX, specialPieceY, newPieceType);
+						if (newPieceType != PieceType.NORMAL)
+						{
+							Destroy (pieces [newPieceX, newPieceY]);
+							GamePiece newPiece = CreateNewP (newPieceX, newPieceY, newPieceType);
 
-							if ((newPieceType == PieceType.ROW_CLEAR || newPieceType == PieceType.COLUMN_CLEAR)
-								&& newPiece.IsColored () && match [0].IsColored ()) {
-								newPiece.ColorComponent.SetColor (match [0].ColorComponent.Color);
+							if ((newPieceType == PieceType.ROW_CLEAR || newPieceType == PieceType.COLUMN_CLEAR) && newPiece.IsColored () && matchList [0].IsColored ()) {
+								newPiece.ColorComponent.SetColor (matchList [0].ColorComponent.Color);
 							}
 						}
 					}
@@ -384,7 +407,8 @@ public class Grid : MonoBehaviour {
 
 	public bool ClearPiece(int x, int y)
 	{
-		if (pieces [x, y].IsClearable () && !pieces [x, y].ClearableComponent.IsBeingCleared) {
+		if (pieces [x, y].IsClearable () && !pieces [x, y].ClearableComponent.IsBeingCleared)
+		{
 			pieces [x, y].ClearableComponent.Clear ();
 			CreateNewP (x, y, PieceType.EMPTY);
 
